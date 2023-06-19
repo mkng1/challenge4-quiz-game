@@ -1,80 +1,110 @@
 var hiScoreList = document.querySelector(".high-scores");
-var win = document.querySelector(".win");
-var lose = document.querySelector(".lose");
 var timerElement = document.querySelector(".timer-count");
 var startButton = document.querySelector(".start-button");
 var resetButton = document.querySelector(".reset-button");
+var backButton = document.querySelector(".back-button");
+var quizSection = document.querySelector(".quiz-section");
 
 
-
+var storageScore;
+var hiScore;
 var timer;
 var timerCount;
+var isWin;
 
-/* timer */
-function startTimer() {
+// winGame();
+// loseGame();
+
+function startQuestions() {
 
 }
 
-/* quiz segment */
-
-/* result state */
 
 
-// High Score retrieval and render
-function getHiScore() {
-    // Access local storage for high score data
-    var hiScore = localStorage.getItem("hiScore");
-    // If there is no record, return empty string
-    if (hiScore === null) {
-        hiScore = "";
-    } else if (hiScore = "") {
-    } else {
-        hiScore = JSON.parse(hiScore);
-    }
-
-      // retrieve and sort high score list by score descending
-      // return high score for rendering
-    }
-
-// Initialise getHiScore for High Score page
-getHiScore();
-
-JSON.parse();
-JSON.stringify();
-
-
+// Start button logic
+startButton.addEventListener("click", function(event) {
+    startGame();
+    });
 
 
 // Start the game by initilaising the timer
 function startGame() {
-timerCount = 75;
-isWin = false;
 
-// Prevents start button from being clicked when round is in progress
-startButton.disabled = true;
+    //Remove starter text from page
+    const element = document.getElementById("starter");
+    element.remove();
+    timerCount = 75;
+    isWin = false;
+    timerElement.textContent = timerCount;
+    setTimer()
+    //Add questions
+    startQuestions();
+}
 
-renderBlanks()
-
-startTimer()
+// Timer starts the countdown and win/loss condition is evaluated
+function setTimer() {
+    timer = setInterval(function() {
+        timerCount--;
+        timerElement.textContent = timerCount;
+        if (timerCount > 0 && isWin === true) {
+            winGame();
+        }
+        if (timerCount <= 0) {
+            clearInterval(timer);
+            loseGame();
+        }
+    },1000)
 }
 
 
-// When initialised, timer starts the countdown and win/loss condition is evaluated
-function setTimer() {
-timer = setInterval( () => {
-    timerCount--;
-    timerElement.textContent = timerCount;
-    if (timerCount > 0) {
-        if (timerCount > 0) {
-            winGame();
+
+
+// High Score retrieval and render
+function getHiScore() {
+
+    backButton.addEventListener("click", function(event) {
+        location.href = "./index.html";
+        });
+    // RESET High Score - Event listener sets high score as ""
+    resetButton.addEventListener("click", function(event) {
+    localStorage.setItem("hiScore", null);
+    });
+    // RESET end
+
+    // If there is no record, return empty string
+    if (hiScore === null) {
+        console.log("hiScore was null");
+        var li = document.createElement("li");            
+        hiScoreList.appendChild(li);
+        li.textContent = "-";
+    } else if (hiScore === "") {
+        console.log("hiScore was an empty string");
+        var li = document.createElement("li");            
+        hiScoreList.appendChild(li);
+        li.textContent = "-";
+    } else {
+        // retrieve and sort high score list by score descending
+        // return high score for rendering
+        storageScore = localStorage.getItem("hiScore")
+        hiScore = JSON.parse(storageScore);
+
+        // Render High Score onto the page
+        for (let index = 0; index < hiScore.length; index++) {
+            // console.log("wtaf" + hiScore.score[index] + hiScore.name[index]);
+            var li = document.createElement("li");            
+            hiScoreList.appendChild(li);
+            li.textContent = hiScore[index].name + " " + hiScore[index].score;
         }
-    } else if (timerCount <= 0) {
-        loseGame();
+    }
     }
 
-},1000)}
+// Start the page script if it is high score page
+function pageLoad() {
+    console.log("initialized Page Load");
+    if (timerElement === null) {
+        console.log("running getHiScore");
+        getHiScore();
+    }
 
-// RESET High Score - Event listener sets high score as ""
-resetButton.addEventListener("click", function(event) {
-    localStorage.setItem("hiScore", "");
-  });
+}
+pageLoad();
