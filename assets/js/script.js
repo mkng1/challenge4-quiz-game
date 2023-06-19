@@ -13,16 +13,17 @@ var hiScore;
 var timer;
 var timerCount;
 var isWin;
+var scoreName;
+var enterName;
 
-// winGame();
-// loseGame();
-
+// Display "correct!!" alert
 function correct() {
     correctAlert.setAttribute("style", "display:block;");
     setInterval(() => {
         correctAlert.setAttribute("style", "display:none;");
     }, 2000);
 }
+// Display "wrong!!" alert
 function wrong() {
     wrongAlert.setAttribute("style", "display:block;");
     setInterval(() => {
@@ -31,21 +32,61 @@ function wrong() {
     timerCount = timerCount - 15;
 }
 
+// Update High Score
+function updateHiScore(event) {
+    event.preventDefault();
+    enterName = document.querySelector(".enter-name");
+    scoreName = enterName.value;
+    var newRecord = {}
+    newRecord.score = timerCount;
+    newRecord.name = scoreName;
+    storageScore = localStorage.getItem("hiScore")
+    hiScore = JSON.parse(storageScore);
+    if (hiScore === null){
+        hiScore = [];
+    }
+    hiScore.push(newRecord);
+    hiScore.sort((a, b) => (a.score < b.score) ? 1 : -1);
+    localStorage.setItem("hiScore", JSON.stringify(hiScore));
+    location.href = "./hiscore.html";
+}
 
 
-
-function lastPage() {
+function loseGame() {
+    quizSection.replaceChildren();
     var h1 = document.createElement("h1");
     var p = document.createElement("p");
+    // var refresh = document.createElement("button");
     quizSection.appendChild(h1);
     quizSection.appendChild(p);
+    // quizSection.appendChild(refresh);
+    h1.textContent = "Your time has run out!";
+    p.textContent = "Please try again";
+    // refresh.textContent = "restart";
+    // refresh.addEventListener("click", location.reload);
+}
+
+function lastPage() {
+    isWin = true;
+    var h1 = document.createElement("h1");
+    var p = document.createElement("p");
+    var p2 = document.createElement("p");
+    var form = document.createElement("form");
+    var text = document.createElement("input");
+    var submitButton = document.createElement("button");
+    quizSection.appendChild(h1);
+    quizSection.appendChild(p);
+    quizSection.appendChild(p2);
     h1.textContent = "All done!";
-    li1.textContent = "Your Final Score is " + timerCount;
-    
-
-    // <input type="text" name="" placeholder="Enter your initials" id="">
-    // <button class="submit-button">Submit</button>
-
+    p.textContent = "Your Final Score is " + timerCount;
+    p2.textContent = "Would you like to record your High Score?";
+    quizSection.appendChild(form);
+    form.appendChild(text);
+    text.setAttribute("placeholder", "Enter your initials");
+    text.setAttribute("class", "enter-name");
+    form.appendChild(submitButton);
+    submitButton.textContent = "submit";
+    submitButton.addEventListener("click", updateHiScore);
 }
 
 function question5() {
@@ -70,18 +111,22 @@ function question5() {
 
     //Event listeners
     li1.addEventListener("click", function(){
+        quizSection.replaceChildren();
         wrong();
         lastPage();
     })
     li2.addEventListener("click", function(){
+        quizSection.replaceChildren();
         wrong();
         lastPage();
     })
     li3.addEventListener("click", function(){
+        quizSection.replaceChildren();
         wrong();
         lastPage();
     })
     li4.addEventListener("click", function(){
+        quizSection.replaceChildren();
         correct();
         lastPage();
     })
@@ -109,18 +154,22 @@ function question4() {
 
     //Event listeners
     li1.addEventListener("click", function(){
+        quizSection.replaceChildren();
         wrong();
         question5();
     })
     li2.addEventListener("click", function(){
+        quizSection.replaceChildren();
         wrong();
         question5();
     })
     li3.addEventListener("click", function(){
+        quizSection.replaceChildren();
         correct();
         question5();
     })
     li4.addEventListener("click", function(){
+        quizSection.replaceChildren();
         wrong();
         question5();
     })
@@ -149,18 +198,22 @@ function question3() {
 
     //Event listeners
     li1.addEventListener("click", function(){
+        quizSection.replaceChildren();
         wrong();
         question4();
     })
     li2.addEventListener("click", function(){
+        quizSection.replaceChildren();
         wrong();
         question4();
     })
     li3.addEventListener("click", function(){
+        quizSection.replaceChildren();
         wrong();
         question4();
     })
     li4.addEventListener("click", function(){
+        quizSection.replaceChildren();
         correct();
         question4();
     })
@@ -281,7 +334,7 @@ function setTimer() {
         timerCount--;
         timerElement.textContent = timerCount;
         if (timerCount > 0 && isWin === true) {
-            winGame();
+            clearInterval(timer);
         }
         if (timerCount <= 0) {
             clearInterval(timer);
@@ -290,11 +343,6 @@ function setTimer() {
     },1000)
 }
 
-
-// Start button logic
-startButton.addEventListener("click", function(event) {
-    startGame();
-    });
 
 // High Score retrieval and render
 function getHiScore() {
@@ -341,6 +389,13 @@ function pageLoad() {
     if (timerElement === null) {
         console.log("running getHiScore");
         getHiScore();
+    } else {
+
+    // Start button logic
+    startButton.addEventListener("click", function(event) {
+        startGame();
+        });
+
     }
 
 }
