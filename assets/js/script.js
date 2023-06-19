@@ -353,6 +353,7 @@ function getHiScore() {
     // RESET High Score - Event listener sets high score as ""
     resetButton.addEventListener("click", function(event) {
     localStorage.setItem("hiScore", null);
+    location.href = "./index.html";
     });
     // RESET end
 
